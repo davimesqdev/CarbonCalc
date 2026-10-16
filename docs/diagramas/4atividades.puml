@@ -1,0 +1,105 @@
+@startuml
+title Diagrama de Atividades — CarbonCalc
+
+skinparam activity {
+    BackgroundColor #DAE8FC
+    BorderColor #1A237E
+    ArrowColor #1A237E
+    DiamondBackgroundColor #FFF9C4
+    DiamondBorderColor #F57F17
+}
+skinparam swimlane {
+    BorderColor #1A237E
+    TitleBackgroundColor #DAE8FC
+}
+
+|#FFF9C4|Usuário|
+|#DAE8FC|Sistema|
+|#D5E8D4|Externo|
+|#F8CECC|Banco|
+
+|Usuário|
+start
+:Realizar Login;
+
+|Sistema|
+:Validar credenciais;
+if (Credenciais válidas?) then (Sim)
+    :Liberar acesso;
+else (Não)
+    :Exibir erro;
+    stop
+endif
+
+|Usuário|
+:Cadastrar Empresa;
+:Cadastrar Planta;
+
+|Sistema|
+if (Tipo de planta?) then (Nova)
+    :Projetar emissões futuras;
+else (Existente)
+    :Informar histórico;
+endif
+
+|Usuário|
+:Registrar Fontes;
+:Registrar Consumo;
+
+|Sistema|
+if (Dados completos?) then (Não)
+    :Solicitar correção;
+    stop
+else (Sim)
+    :Prosseguir;
+endif
+:Buscar fatores de emissão;
+
+|Externo|
+if (Sistema externo disponível?) then (Sim)
+    :Retornar fatores;
+else (Não)
+    :Usar cache local;
+endif
+
+|Sistema|
+fork
+    :Calcular Escopo 1;
+fork again
+    :Calcular Escopo 2;
+fork again
+    :Calcular Escopo 3;
+end fork
+:Somar total CO2e;
+
+|Banco|
+:Salvar cálculo;
+if (Falha na persistência?) then (Sim)
+    |Sistema|
+    :Registrar erro e notificar;
+    stop
+else (Não)
+    |Sistema|
+    :Prosseguir;
+endif
+
+|Sistema|
+:Comparar cenários;
+if (Precisa compensar?) then (Sim)
+    :Calcular compensação;
+    :Sugerir ações;
+else (Não)
+    :Seguir;
+endif
+:Gerar relatório;
+if (Exportar?) then (Sim)
+    :Exportar PDF/Excel;
+endif
+if (Enviar ao órgão?) then (Sim)
+    :Enviar + protocolo;
+endif
+
+|Usuário|
+:Receber resultado;
+stop
+@enduml

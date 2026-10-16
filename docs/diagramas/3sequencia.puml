@@ -1,0 +1,73 @@
+@startuml
+title Diagrama de Sequência — UC07 Calcular Pegada de Carbono
+
+autonumber
+skinparam sequenceMessageAlign center
+skinparam sequence {
+    ArrowColor #1A237E
+    LifeLineBorderColor #1A237E
+    ParticipantBorderColor #1A237E
+    ParticipantBackgroundColor #DAE8FC
+}
+
+actor "Gestor" as G
+participant "Tela" as T
+participant "Controller" as C
+participant "CalcularPegada\nService" as S
+participant "SistemaExterno\n(GHG Protocol)" as SE
+database "Banco de Dados" as BD
+
+G -> T : clicar "Calcular"
+activate T
+T -> C : solicitarCalculo(empresaId, periodo)
+activate C
+C -> S : calcular(empresaId, periodo)
+activate S
+
+group Buscar dados internos
+    S -> BD : SELECT consumos
+    activate BD
+    BD --> S : lista consumos
+    deactivate BD
+end
+
+alt Dados insuficientes
+    S --> C : ErroValidacao
+    C --> T : redirecionar para UC06
+    T --> G : solicitar registro de consumo
+else Dados completos
+
+    group Buscar fatores externos (assíncrono, timeout 5s)
+        S ->> SE : GET /fatores
+        activate SE
+        alt Sistema externo disponível
+            SE -->> S : fatores (JSON)
+        else Timeout / indisponível
+            S -> S : carregar cache local
+        end
+        deactivate SE
+    end
+
+    S -> S : calcularCO2e(consumos, fatores)
+    note right of S
+      Escopo 1: emissões diretas
+      Escopo 2: energia elétrica
+      Escopo 3: cadeia de valor
+    end note
+
+    group Persistir resultado
+        S -> BD : INSERT calculo
+        activate BD
+        BD --> S : id gerado
+        deactivate BD
+    end
+
+    S --> C : Calculo
+    C --> T : CalculoDTO
+    T --> G : exibir resultado
+end
+
+deactivate S
+deactivate C
+deactivate T
+@enduml

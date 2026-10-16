@@ -1,0 +1,69 @@
+@startuml
+title Diagrama de Implantação — CarbonCalc
+
+skinparam node {
+    BackgroundColor #DAE8FC
+    BorderColor #1A237E
+    FontColor #1A237E
+}
+skinparam database {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+}
+skinparam cloud {
+    BackgroundColor #E1D5E7
+    BorderColor #6A1B9A
+}
+
+node "👤 Usuário\n(Navegador)" as U <<device>>
+
+cloud "🌐 Internet" as NET {
+    node "CDN" as CDN <<executionEnvironment>>
+    node "Load Balancer" as LB <<executionEnvironment>>
+}
+
+node "🔒 DMZ" as DMZ {
+    node "Servidor Web\n(React)" as WEB <<executionEnvironment>>
+}
+
+node "🔐 Rede Interna" as LAN {
+    node "Servidor App\n(API + Serviços)" as APP <<executionEnvironment>>
+    database "PostgreSQL" as DB
+    node "Redis\n(Cache)" as CACHE <<executionEnvironment>>
+    node "Backup" as BACKUP <<executionEnvironment>>
+}
+
+cloud "☁️ Serviços Cloud" as CLOUD {
+    node "S3\n(Storage)" as STORAGE <<executionEnvironment>>
+}
+
+cloud "GHG Protocol\n(API Externa)" as EXT
+
+U --> CDN : HTTPS (443)
+CDN --> LB : HTTPS (443)
+LB --> WEB : HTTPS (443)
+LB --> APP : HTTP (8080)
+WEB --> APP : REST/JSON (8080)
+APP --> DB : SQL (5432)
+APP --> CACHE : Redis (6379)
+APP --> STORAGE : S3 API (443)
+DB --> BACKUP : replicação (5432)
+APP --> EXT : HTTPS (443)
+
+note right of APP
+  Servidor de aplicação
+  empacota API Gateway
+  + todos os serviços
+end note
+
+note bottom of DB
+  PostgreSQL 15+
+  com replicação
+  para Backup
+end note
+
+note bottom of STORAGE
+  Serviço gerenciado
+  fora da rede interna
+end note
+@enduml

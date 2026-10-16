@@ -1,0 +1,45 @@
+# O diagrama de implantação usa a 8080; aqui o padrão é 8085 porque a 8080 costuma estar ocupada.
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  application:
+    name: carboncalc
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/carboncalc}
+    username: ${DB_USER:carboncalc}
+    password: ${DB_PASSWORD:carboncalc}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      timeout: 2s
+  cache:
+    type: redis
+    redis:
+      time-to-live: 24h
+
+carboncalc:
+  jwt:
+    # Valor de desenvolvimento. Em produção, defina JWT_SECRET (mínimo de 32 caracteres).
+    secret: ${JWT_SECRET:carboncalc-dev-secret-troque-em-producao-0123456789}
+    expiracao-minutos: 480
+  storage:
+    endpoint: ${S3_ENDPOINT:http://localhost:9000}
+    region: us-east-1
+    bucket: carboncalc-relatorios
+    access-key: ${S3_ACCESS_KEY:carboncalc}
+    secret-key: ${S3_SECRET_KEY:carboncalc-minio}
+  ghg:
+    # Simula a disponibilidade da fonte externa de fatores (GHG Protocol).
+    # Com false, o cálculo usa o cache local, como no diagrama de sequência.
+    disponivel: true
+    timeout-segundos: 5
+  seed:
+    # Usuários de demonstração criados na primeira execução:
+    # admin@carboncalc.local, gestor@carboncalc.local e auditor@carboncalc.local
+    senha: ${SEED_SENHA:carboncalc123}

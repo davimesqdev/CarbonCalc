@@ -1,0 +1,25 @@
+
+.claude/
+
+# Arquivos locais e segredos
+**/.env
+**/.env.*
+!**/.env.example
+**/application-local.yml
+**/application-local.yaml
+
+# Bancos de dados locais
+**/data/
+**/*.mv.db
+**/*.trace.db
+
+# Builds e dependências
+**/target/
+**/node_modules/
+**/dist/
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

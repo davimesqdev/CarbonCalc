@@ -1,0 +1,80 @@
+@startuml
+title Diagrama de Componentes — CarbonCalc
+
+skinparam component {
+    BackgroundColor #DAE8FC
+    BorderColor #1A237E
+    FontColor #1A237E
+}
+skinparam package {
+    BackgroundColor #F5F5F5
+    BorderColor #666666
+}
+skinparam interface {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+}
+
+package "Apresentação" {
+    component "Frontend Web\n(React)" as FE
+}
+
+package "API Gateway" {
+    component "REST API" as API
+}
+
+package "Serviços" {
+    component "Auth Service" as AUTH
+    component "Cadastro Service" as CAD
+    component "Cálculo Service" as CALC
+    component "Compensação Service" as COMP
+    component "Relatório Service" as REL
+    component "Consulta Service" as CONS
+}
+
+package "Dados" {
+    database "PostgreSQL" as BD
+    component "Redis\n(Cache)" as CACHE
+    component "S3\n(Storage)" as STORAGE
+}
+
+package "Integração" {
+    component "Integração Externa" as INT
+}
+
+cloud "GHG Protocol\n(API Externa)" as EXT
+
+interface "IAuth" as IAuth
+interface "ICalculo" as ICalculo
+interface "IRelatorio" as IRelatorio
+interface "IRepository" as IRepo
+
+' Realização de interface (componente implementa interface) — UML correto
+AUTH ..|> IAuth
+CALC ..|> ICalculo
+REL ..|> IRelatorio
+
+' API Gateway depende das interfaces
+API ..> IAuth
+API ..> ICalculo
+API ..> IRelatorio
+
+' Serviços dependem do repositório
+AUTH ..> IRepo
+CAD ..> IRepo
+CALC ..> IRepo
+COMP ..> IRepo
+REL ..> IRepo
+CONS ..> IRepo
+
+' Repositório acessa o banco
+IRepo ..> BD
+
+' Dependências externas
+FE --> API : HTTPS
+CALC --> CACHE : cache de fatores
+CONS --> CACHE
+REL --> STORAGE : armazena PDF/Excel
+CALC --> INT : solicita fatores
+INT --> EXT : HTTPS/JSON
+@enduml

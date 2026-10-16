@@ -1,0 +1,558 @@
+/* Paleta tirada da logo: terracota da calculadora, verdes das folhas e das teclas, petróleo do visor. */
+:root {
+  --terracota: #cb6832;
+  --terracota-claro: #f6e3d8;
+  --verde: #026838;
+  --verde-vivo: #049a33;
+  --verde-claro: #e3f3e6;
+  --petroleo: #003233;
+  --fundo: #f6f4f0;
+  --superficie: #ffffff;
+  --borda: #dcd8d0;
+  --texto: #1c2b2b;
+  --texto-suave: #5b6868;
+  --erro: #a3261f;
+  --erro-fundo: #fbe9e7;
+
+  /* Escopos: validados para daltonismo (terracota, azul, verde). */
+  --escopo1: #cb6832;
+  --escopo2: #2b6cb0;
+  --escopo3: #1f8a4c;
+
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--texto);
+  background: var(--fundo);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--verde);
+}
+
+small {
+  color: var(--texto-suave);
+}
+
+/* Estrutura */
+.app {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  min-height: 100vh;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 14px;
+  background: var(--petroleo);
+  color: #fff;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 6px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.marca img {
+  width: 40px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.lateral nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.lateral nav a {
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: #d5e3e0;
+  text-decoration: none;
+}
+
+.lateral nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lateral nav a.active {
+  background: var(--verde-vivo);
+  color: #fff;
+  font-weight: 600;
+}
+
+.lateral-usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 6px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.lateral-usuario small {
+  color: #a9c2be;
+  margin-bottom: 10px;
+}
+
+.conteudo {
+  min-width: 0;
+}
+
+.barra-empresa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 32px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+}
+
+.barra-empresa label {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.barra-empresa select {
+  min-width: 260px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 1120px;
+  padding: 28px 32px 48px;
+}
+
+.pagina-cabecalho h1 {
+  font-size: 1.6rem;
+  color: var(--petroleo);
+}
+
+.pagina-cabecalho p {
+  margin-top: 4px;
+  color: var(--texto-suave);
+}
+
+/* Cartões e formulários */
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.cartao h2 {
+  font-size: 1.05rem;
+  color: var(--petroleo);
+}
+
+.cartao h3 {
+  font-size: 0.95rem;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 180px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #b9b4aa;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--texto);
+  font: inherit;
+}
+
+input[type='checkbox'] {
+  width: auto;
+  accent-color: var(--verde);
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--terracota);
+  outline-offset: 2px;
+}
+
+button {
+  padding: 9px 16px;
+  border: 1px solid var(--verde);
+  border-radius: 8px;
+  background: var(--verde);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+button:hover:not(:disabled) {
+  background: #01522c;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.botao-secundario {
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--verde);
+  font-weight: 500;
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: var(--verde-claro);
+}
+
+.lateral .botao-secundario {
+  align-self: flex-start;
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.lateral .botao-secundario:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.marcar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+/* Tabelas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th {
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--borda);
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #ece9e3;
+  vertical-align: top;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.acoes {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.acoes button + button {
+  margin-left: 6px;
+}
+
+.linha-total td {
+  font-weight: 700;
+  border-top: 2px solid var(--borda);
+}
+
+/* Avisos e etiquetas */
+.aviso {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+}
+
+.aviso:empty {
+  display: none;
+}
+
+.aviso-erro {
+  background: var(--erro-fundo);
+  color: var(--erro);
+}
+
+.aviso-erro a {
+  color: var(--erro);
+  font-weight: 600;
+}
+
+.vazio,
+.legenda {
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+
+.etiqueta {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ebe8e2;
+  color: #4a5555;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.etiqueta-ativa,
+.status-ativa {
+  background: var(--verde-claro);
+  color: var(--verde);
+}
+
+.status-cadastrada {
+  background: #e4ecf7;
+  color: #23507f;
+}
+
+.status-em_manutencao {
+  background: var(--terracota-claro);
+  color: #8a3f17;
+}
+
+/* Plantas */
+.planta-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.planta-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Indicadores */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.indicador span {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.indicador strong {
+  font-size: 1.7rem;
+  color: var(--petroleo);
+  font-variant-numeric: tabular-nums;
+}
+
+.indicador.destaque {
+  border-color: var(--terracota);
+  background: var(--terracota-claro);
+}
+
+/* Resultado do cálculo */
+.resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--borda);
+}
+
+.resultado-total {
+  font-size: 1.1rem;
+  color: var(--texto-suave);
+}
+
+.resultado-total strong {
+  font-size: 2.2rem;
+  color: var(--petroleo);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barra de participação por escopo */
+.escopos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.escopos-barra {
+  display: flex;
+  gap: 2px;
+  height: 20px;
+}
+
+.escopos-segmento {
+  min-width: 4px;
+  border-radius: 4px;
+}
+
+.escopos-segmento:hover {
+  filter: brightness(1.12);
+}
+
+.escopos figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.escopos-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+
+.escopos-marca {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.escopo1 {
+  background: var(--escopo1);
+}
+
+.escopo2 {
+  background: var(--escopo2);
+}
+
+.escopo3 {
+  background: var(--escopo3);
+}
+
+/* Login */
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  background: var(--petroleo);
+}
+
+.login-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(380px, 100%);
+  padding: 32px;
+  background: var(--superficie);
+  border-radius: 16px;
+}
+
+.login-cartao img {
+  width: 96px;
+  align-self: center;
+}
+
+.login-cartao h1 {
+  text-align: center;
+  color: var(--petroleo);
+}
+
+.login-cartao > p:not(.aviso) {
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+
+.login-cartao .campo {
+  flex: none;
+}
+
+.login-cartao button {
+  align-self: stretch;
+}
+
+@media (max-width: 760px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .barra-empresa,
+  main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .barra-empresa select {
+    min-width: 0;
+  }
+
+  .cartao {
+    overflow-x: auto;
+  }
+}

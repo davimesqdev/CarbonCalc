@@ -1,0 +1,40 @@
+# Infraestrutura local do CarbonCalc (diagramas de componentes e implantação).
+# As senhas abaixo são apenas para desenvolvimento local.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: carboncalc
+      POSTGRES_USER: carboncalc
+      POSTGRES_PASSWORD: carboncalc
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carboncalc"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # MinIO faz o papel do S3 em ambiente local.
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: carboncalc
+      MINIO_ROOT_PASSWORD: carboncalc-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:

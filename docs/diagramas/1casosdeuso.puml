@@ -1,0 +1,91 @@
+@startuml
+title Diagrama de Casos de Uso — CarbonCalc
+
+skinparam usecase {
+    BackgroundColor #DAE8FC
+    BorderColor #1A237E
+    FontColor #1A237E
+}
+skinparam actor {
+    BackgroundColor #FFF9C4
+    BorderColor #F57F17
+    FontColor #333333
+}
+skinparam rectangle {
+    BackgroundColor #F5F5F5
+    BorderColor #333333
+}
+
+actor "Gestor Ambiental" as G
+actor "Empresa /\nAdministrador" as E
+actor "Auditor" as A
+actor "Órgão\nRegulador" as O
+actor "Sistema Externo\nde Dados\n(GHG Protocol)" as S
+
+rectangle "CarbonCalc — Sistema de Pegada de Carbono Empresarial" {
+
+    package "Autenticação" {
+        usecase "UC01\nRealizar Login" as UC01
+        usecase "UC02\nGerenciar Usuários" as UC02
+    }
+    package "Cadastro" {
+        usecase "UC03\nCadastrar Empresa" as UC03
+        usecase "UC04\nCadastrar Planta" as UC04
+        usecase "UC05\nRegistrar Fontes" as UC05
+    }
+    package "Cálculo" {
+        usecase "UC06\nRegistrar Consumo" as UC06
+        usecase "UC07\nCalcular Pegada" as UC07
+        usecase "UC08\nComparar Cenários" as UC08
+    }
+    package "Compensação" {
+        usecase "UC09\nCalcular Compensação" as UC09
+        usecase "UC10\nSugerir Ações" as UC10
+    }
+    package "Relatórios" {
+        usecase "UC11\nGerar Relatório" as UC11
+        usecase "UC12\nExportar Dados" as UC12
+        usecase "UC13\nEnviar ao Órgão" as UC13
+    }
+    package "Consulta" {
+        usecase "UC14\nConsultar Histórico" as UC14
+    }
+}
+
+G --> UC06
+G --> UC07
+G --> UC08
+G --> UC09
+G --> UC10
+G --> UC11
+G --> UC12
+
+E --> UC01
+E --> UC02
+E --> UC03
+E --> UC04
+E --> UC05
+
+A --> UC14
+A --> UC11
+
+UC13 --> O
+S --> UC07
+
+' Include: caso base SEMPRE executa o incluído
+UC07 ..> UC06 : <<include>>
+UC08 ..> UC07 : <<include>>
+
+' Extend: caso de extensão aponta PARA o caso base (opcional)
+UC10 ..> UC09 : <<extend>>
+UC12 ..> UC11 : <<extend>>
+UC13 ..> UC11 : <<extend>>
+
+' Associação simples (relação fraca)
+UC11 -- UC07 : usa resultado
+
+note bottom of UC07
+  Consome fatores do
+  Sistema Externo de Dados
+end note
+@enduml

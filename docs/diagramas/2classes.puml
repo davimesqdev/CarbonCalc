@@ -1,0 +1,131 @@
+@startuml
+title Diagrama de Classes — CarbonCalc
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor #DAE8FC
+    BorderColor #1A237E
+    ArrowColor #1A237E
+    FontColor #1A237E
+}
+skinparam package {
+    BackgroundColor #F5F5F5
+    BorderColor #666666
+}
+
+package "Usuários" {
+    abstract class Usuario <<abstract>> {
+        - id: Long
+        - nome: String
+        - email: String
+        - senhaHash: String
+        - perfil: Perfil
+        --
+        + login(email: String, senha: String): Token
+        + logout(): void
+    }
+    class Administrador <<entity>> {
+        --
+        + gerenciarUsuarios(): List<Usuario>
+    }
+    class GestorAmbiental <<entity>> {
+        --
+        + calcularPegada(empresaId: Long, periodo: Periodo): Calculo
+        + gerarRelatorio(calculoId: Long): Relatorio
+    }
+    class Auditor <<entity>> {
+        --
+        + consultarHistorico(empresaId: Long, filtro: Filtro): List<Calculo>
+    }
+}
+
+Usuario <|-- Administrador
+Usuario <|-- GestorAmbiental
+Usuario <|-- Auditor
+
+package "Cadastros" {
+    class Empresa <<entity>> {
+        - id: Long
+        - nome: String
+        - cnpj: String
+        - setor: String
+        --
+        + cadastrar(): Empresa
+    }
+    class Planta <<entity>> {
+        - id: Long
+        - nome: String
+        - localizacao: String
+        - tipo: TipoPlanta
+        - status: StatusPlanta
+        --
+        + cadastrar(): Planta
+        + ativar(): void
+        + inativar(): void
+    }
+    class FonteEmissao <<entity>> {
+        - id: Long
+        - tipo: TipoFonte
+        - descricao: String
+        --
+        + cadastrar(): FonteEmissao
+    }
+    class FatorEmissao <<entity>> {
+        - id: Long
+        - valor: BigDecimal
+        - unidade: String
+        - vigencia: Periodo
+        --
+        + atualizar(novoValor: BigDecimal): void
+    }
+}
+
+Empresa "1" *-- "*" Planta : possui
+Planta "1" *-- "*" FonteEmissao : contém
+FonteEmissao "1" -- "*" FatorEmissao : usa
+
+package "Cálculos" {
+    class Consumo <<entity>> {
+        - id: Long
+        - quantidade: BigDecimal
+        - periodo: Periodo
+        --
+        + registrar(): Consumo
+    }
+    class Calculo <<entity>> {
+        - id: Long
+        - totalCO2e: BigDecimal
+        - escopo1: BigDecimal
+        - escopo2: BigDecimal
+        - escopo3: BigDecimal
+        - dataCalculo: LocalDateTime
+        --
+        + calcular(): BigDecimal
+    }
+    class Compensacao <<entity>> {
+        - id: Long
+        - tipoAcao: String
+        - creditosNecessarios: BigDecimal
+        --
+        + calcular(): BigDecimal
+    }
+}
+
+FonteEmissao "1" *-- "*" Consumo : gera
+Empresa "1" -- "*" Calculo : possui
+Calculo "1" -- "*" Compensacao : origina
+
+package "Relatórios" {
+    class Relatorio <<entity>> {
+        - id: Long
+        - tipo: TipoRelatorio
+        - formato: Formato
+        - geradoEm: LocalDateTime
+        --
+        + gerar(): byte[]
+    }
+}
+
+Empresa "1" -- "*" Relatorio : emite
+Calculo "1" -- "*" Relatorio : baseia
+@enduml

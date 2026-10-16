@@ -1,0 +1,45 @@
+@startuml
+title Diagrama de Estados — Ciclo de Vida da Planta
+
+skinparam state {
+    BackgroundColor #D5E8D4
+    BorderColor #2E7D32
+    ArrowColor #2E7D32
+    FontColor #1B5E20
+}
+
+[*] --> Cadastrada : cadastrar()
+
+Cadastrada --> Ativa : ativar() [documentação OK]
+Cadastrada --> Arquivada : cancelarCadastro()
+
+state Ativa {
+    [*] --> Operando
+    Operando --> Ociosa : sem consumo registrado
+    Ociosa --> Operando : consumo registrado
+}
+
+Ativa --> EmManutencao : entrarManutencao()
+EmManutencao --> Ativa : sairManutencao() [manutenção concluída]
+
+Ativa --> Inativa : inativar() [decisão administrativa]
+Inativa --> Ativa : reativar()
+Inativa --> Arquivada : after(5 anos) / arquivarAutomaticamente()
+
+Arquivada --> [*]
+
+note right of Ativa
+  Planta operando normalmente,
+  gerando consumos e cálculos
+end note
+
+note right of EmManutencao
+  Planta temporariamente parada,
+  sem registro de novos consumos
+end note
+
+note right of Arquivada
+  Histórico mantido apenas
+  para consulta e auditoria
+end note
+@enduml
